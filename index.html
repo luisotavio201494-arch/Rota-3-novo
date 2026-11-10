@@ -44,33 +44,42 @@ body.dark{background:#0d1420;color:#e6edf7}.dark .panel,.dark .ov .box{backgroun
 .dark .muted,.dark small,.dark .stat span{color:#9fb0c8}.dark button.sec,.dark a.btn.sec,.dark label.btn.sec{background:#1f2b40;color:#8fb4ff}.dark .stat{background:#0f1826;border-color:#263248}.dark .num,.dark .tag{background:#1f2b40;color:#8fb4ff}
 .dark .stop{border-color:#263248}.dark .stop.hl,.dark .next.hl{background:#3a2412}.dark .hlb{background:#4a2c14;color:#fdba74}.dark label{color:#e6edf7!important}.dark .stop a,.dark .stop summary{color:#8fb4ff}.dark .bar{background:#263248}
 .dark .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9)}
+.stop>div{min-width:0;overflow-wrap:anywhere}.stop>input[type=checkbox]{justify-self:end;align-self:start}
 </style></head><body>
-<header><h1>Rota Fácil</h1><p id="sub">Roteirização de entregas • Aparecida de Goiânia e região</p><p style="margin:2px 0 0;font-size:11px;opacity:.8">Versão 3 · próxima = a mais perto de você</p></header>
+<header><h1>Rota Fácil</h1><p id="sub">Roteirização de entregas</p><p style="margin:2px 0 0;font-size:11px;opacity:.8">Versão 4 · próxima = a mais perto de você</p></header>
 <main>
 <div class="left">
 <section class="panel next" id="nextp"></section>
 <section class="panel" id="ctl">
 <h2>Planejar rota</h2>
 <div class="row" style="margin-top:0"><button id="gps">📍 Usar minha localização</button><button class="sec" id="fol">🛰️ Seguir GPS: desligado</button></div>
+<div class="row"><button class="sec" id="drv">🚗 Modo dirigindo: desligado</button></div>
+<div class="stats"><div class="stat"><b id="km">—</b><span>km restantes</span></div><div class="stat"><b id="cost">—</b><span>combustível</span></div><div class="stat"><b id="time">—</b><span>tempo total</span></div><div class="stat"><b id="eta">—</b><span>termina ~</span></div></div>
+<div class="bar"><i id="prog"></i></div><div class="muted" id="psum"></div>
+<div class="row"><label class="btn sec" style="margin:0;font-size:14px">📂 Importar planilha<input id="file" type="file" accept=".xlsx,.xls,.csv,.json,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden></label><a class="btn sec" id="full" target="_blank">🧭 Próximas 10 no Maps</a></div>
+<div id="status" class="status">Pronto. O mapa e as ruas reais precisam de internet.</div>
+<details id="more" style="margin-top:12px"><summary style="cursor:pointer;font-weight:700;font-size:14px">⋯ Mais opções</summary>
+<div class="row"><button class="sec" id="upd">🔄 Atualizar o app (buscar a versão mais nova)</button></div>
 <label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" id="real" checked style="width:auto"> Usar distâncias reais das ruas (OSRM)</label>
 <label>Agrupar as paradas por<select id="gm"><option value="perto">Perto de mim primeiro (por região)</option><option value="rua">Rua (evita voltar na mesma rua)</option><option value="quadra">Quadra</option><option value="nenhum">Só pela distância</option></select></label>
 <div class="g2"><div><label>Raio da região (m)</label><input id="rad" type="number" min="50" max="1500" step="50" value="250"></div><div class="muted" style="padding-top:22px">entrega tudo dentro deste raio antes de sair dele</div></div>
 <label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" id="zon" style="width:auto"> Agrupar por zonas (termina uma zona antes da próxima)</label>
-<div class="row"><button class="sec" id="drv">🚗 Modo dirigindo: desligado</button></div>
+<details style="margin:8px 0"><summary style="cursor:pointer;font-weight:700;font-size:13px">⚙️ Custos e tempo (consumo, gasolina, valor por pacote)</summary>
 <div class="g2"><div><label>Consumo (km/L)</label><input id="cons" type="number" min="1" step=".1" value="10"></div><div><label>Gasolina (R$/L)</label><input id="fuel" type="number" min="0" step=".01" value="6.20"></div></div>
 <div class="g2"><div><label>Min por parada</label><input id="svc" type="number" min="0" value="2"></div><div><label>Km/h (sem OSRM)</label><input id="kmh" type="number" min="5" value="20"></div></div>
 <div class="g2"><div><label>Valor por pacote (R$)</label><input id="ppk" type="number" min="0" step=".01" value="0"></div><div><label>Seu ritmo</label><div id="pace" class="muted" style="padding:10px 0">ainda sem dados</div></div></div>
+</details>
 <div class="row"><button class="sec" id="dk">🌙 Modo noturno</button></div>
 <div id="refine" class="muted" style="margin:8px 0"></div>
 <div id="ruas" class="muted" style="margin:6px 0"></div>
 <div class="row"><button class="sec" id="endb">🏁 Definir ponto final (aqui)</button><button class="sec" id="reopt">🔄 Otimizar de novo</button></div>
-<div class="stats"><div class="stat"><b id="km">—</b><span>km restantes</span></div><div class="stat"><b id="cost">—</b><span>combustível</span></div><div class="stat"><b id="time">—</b><span>tempo total</span></div><div class="stat"><b id="eta">—</b><span>termina ~</span></div></div>
-<div class="bar"><i id="prog"></i></div><div class="muted" id="psum"></div><div id="zs" style="margin-top:6px"></div><div id="ptsinfo" class="muted" style="margin-top:6px"></div>
-<div class="row"><label class="btn sec" style="margin:0;font-size:14px">📂 Importar planilha<input id="file" type="file" accept=".xlsx,.xls,.csv,.json,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden></label><button class="sec" id="cp">📋 Resumo</button><button class="sec" id="exp">⬇️ CSV</button></div>
+<div id="zs" style="margin-top:6px"></div><div id="ptsinfo" class="muted" style="margin-top:6px"></div>
+<div class="row"><button class="sec" id="cp">📋 Resumo</button><button class="sec" id="exp">⬇️ CSV</button></div>
 <div class="row"><button class="sec" id="hb">📊 Histórico</button><button class="sec" id="bk">💾 Backup</button></div><div id="histbox" hidden style="margin-top:8px"></div>
+<div class="row"><button class="sec" id="fb">💬 Enviar feedback</button></div>
 <div class="row"><button class="sec" id="clr">🗑️ Limpar dados</button></div>
-<div class="row"><button class="sec" id="rst">Recomeçar</button><a class="btn sec" id="full" target="_blank">🧭 Próximas 10 no Maps</a></div>
-<div id="status" class="status">Pronto. O mapa e as ruas reais precisam de internet.</div>
+<div class="row"><button class="sec" id="rst">Recomeçar</button></div>
+</details>
 </section>
 <section class="panel" id="lst"><h2>Paradas <span id="count" class="muted"></span></h2>
 <input id="q" placeholder="🔎 Buscar endereço, quadra ou nome"><div id="stops"></div></section>
@@ -84,7 +93,7 @@ body.dark{background:#0d1420;color:#e6edf7}.dark .panel,.dark .ov .box{backgroun
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-const S0=[{"la":-16.79419,"lo":-49.351627,"sp":25,"b":"Setor Dos Bandeirantes","z":"74947-776","p":[["Avenida 2ª Avenida, 0, Qd 13 lt 16 casa 1","BR261766922324G",37]]},{"la":-16.795173,"lo":-49.349027,"sp":27,"b":"Setor Aeroporto Sul","z":"74947-140","p":[["Rua 204, Cs 2, Q34 lt 28 cs 2","BR2644924394066",39]]},{"la":-16.794878,"lo":-49.349052,"sp":28,"b":"Setor Aeroporto Sul","z":"74947-140","p":[["Rua 204, S, Quadra 14 lote 10 casa 02","BR266839732980O",40]]},{"la":-16.794603,"lo":-49.349045,"sp":28,"b":"Setor Aeroporto Sul","z":"74947-120","p":[["Rua 202, 01, Qd. 29 Lt. 15 CS. 01","BR262001349516T",41]]},{"la":-16.79352,"lo":-49.349903,"sp":29,"b":"Setor Aeroporto Sul","z":"74947-100","p":[["Rua 200, S/N, Qd 02 Lt 08 C1","BR260174755205W",42]]},{"la":-16.793676,"lo":-49.349384,"sp":30,"b":"Setor Aeroporto Sul","z":"74947-100","p":[["Rua 200, Sn, Qd. 30 Lt. 17","BR2687113126425",43],["Rua 200, Sn, Qd 31 lote 29 casa 2","BR269946145257H",45],["Rua 200, Sn, Q18 L21","BR261655899897N",46],["Rua 200, Sn, Qd18 Lt19","BR264861774227C",47],["Rua 200, Sn, Qd 31 lote 29 casa 2","BR265196124467L",49]]},{"la":-16.7938,"lo":-49.3493,"sp":30,"b":"Setor Aeroporto Sul","z":"74947-100","p":[["Rua 200, 1, Quadra 19 lote 9 casa 1","BR268912036003O",44],["Rua 200, 1, Q19 lote 9 casa 1","BR264889711975D",48]]},{"la":-16.794001,"lo":-49.348301,"sp":33,"b":"Setor Aeroporto Sul","z":"74947-100","p":[["Rua 200, 2, Q 2 L 2 casa 2","BR261224163394C",50],["Rua 200, 2, Qd 19 Lt 3 casa 2","BR2609549221750",51]]},{"la":-16.792601,"lo":-49.3494,"sp":35,"b":"Residencial Serra Das Brisas","z":"74947-828","p":[["Avenida das Esmeraldas, 0, qd 17 Lt 22 centro automotivo","BR261210036909B",52]]},{"la":-16.7925,"lo":-49.349701,"sp":35,"b":"Residencial Serra Das Brisas","z":"74947-828","p":[["Avenida das Esmeraldas, 01, Loja de Celular Qd. 20 lt.37","BR2656814138122",53]]},{"la":-16.791117,"lo":-49.350033,"sp":36,"b":"Residencial Serra Das Brisas","z":"74947-836","p":[["Rua Coral, 0, Quadra 8 lote 05","BR2638793478819",54]]},{"la":-16.790829,"lo":-49.350563,"sp":37,"b":"Residencial Serra Das Brisas","z":"74947-819","p":[["Rua Zircônio, S/N, Portão verde","BR267208989939W",55]]},{"la":-16.789665,"lo":-49.350357,"sp":38,"b":"Residencial Serra Das Brisas","z":"74947-819","p":[["R Zircônio qd 07 lote 25, 01, Setor Serra das Brisas","BR2697844535014",56]]},{"la":-16.789085,"lo":-49.349941,"sp":39,"b":"Residencial Serra Das Brisas","z":"74947-831","p":[["Av z q 07 lt 23, 03, frente a caixa de água d sanea","BR265251676414T",57]]},{"la":-16.79014,"lo":-49.349518,"sp":40,"b":"Residencial Serra Das Brisas","z":"74947-836","p":[["Rua Coral, Qd 08, Lote 04","BR264262579192W",58]]},{"la":-16.7878,"lo":-49.348801,"sp":41,"b":"Residencial Araguaia","z":"74946-720","p":[["Rua Zaquias Chaer Abras Q13 L33 Residencial Araguaia- Aparecida de Goiânia, Sem/N, RESIDENCIAL ARAGUAIA","BR269022732280G",59]]},{"la":-16.787554,"lo":-49.349441,"sp":42,"b":"Residencial Araguaia","z":"74946-715","p":[["Rua Osório Andrade de Souza, Lt11, Qd11 lote 11","BR267111093263F",60]]},{"la":-16.787273,"lo":-49.34983,"sp":43,"b":"Residencial Araguaia","z":"74946-715","p":[["Rua Osório Andrade de Souza, Sn, Qd11 Lt4. (Casa próxima a esq)","BR264468962985W",61]]},{"la":-16.787201,"lo":-49.349899,"sp":43,"b":"Residencial Araguaia","z":"74946-715","p":[["Rua Osório Andrade de Souza, Sem, Qd 11 Lt 8","BR2663953766181",62]]},{"la":-16.786303,"lo":-49.350056,"sp":44,"b":"Residencial Araguaia","z":"74946-715","p":[["R Osório A de Souza quadra 7 lote 29, 000, Residencial Araguaia","BR262171824918H",63]]},{"la":-16.785151,"lo":-49.349724,"sp":45,"b":"Residencial Araguaia","z":"74946-775","p":[["Rua Mário Bittar, sn, Q6 LT22 conge doceria podejoga","BR264456827494O",64]]},{"la":-16.785,"lo":-49.351002,"sp":46,"b":"Setor Belo Horizonte","z":"74946-651","p":[["Rua Monte Alegre, S/N, Qd11 Lt13","BR260939253639Y",65]]},{"la":-16.785599,"lo":-49.351986,"sp":47,"b":"Setor Belo Horizonte","z":"74946-645","p":[["Rua Juiz de Fora qd08 lt18, 1","BR260246470673V",66],["Rua Juiz de Fora qd08 lt18, 1","BR2616633309476",67]]},{"la":-16.786791,"lo":-49.352108,"sp":48,"b":"Setor Belo Horizonte","z":"74946-645","p":[["Rua Juiz de Fora, S/N, Qd 10 LT 02","BR2607380607702",68],["Rua Juiz de Fora, S/N","BR267093945078T",69],["Rua Juiz de Fora, S/N","BR2628126420056",70],["Rua Juiz de Fora, S/N, Qd 10 LT 02","BR266674013426X",72],["Rua Juiz de Fora, S/N, Qd 10 LT 02","BR264780803764S",73],["Rua Juiz de Fora, S/N, Qd 10 LT 02","BR268544678930T",74],["Rua Juiz de Fora, S/N, Qd 10 LT 02","BR268108834837W",75]]},{"la":-16.787346,"lo":-49.352291,"sp":49,"b":"Setor Belo Horizonte","z":"74946-645","p":[["Rua Juiz de fora Qd 12 Lt 05, s/n","BR267679092319L",71]]},{"la":-16.785999,"lo":-49.350399,"sp":51,"b":"Residencial Araguaia","z":"74946-705","p":[["Rua Patos de Minas, S/N, Quadra 7 lote 4","BR2664597989263",76],["Rua Patos de Minas, S/N, Quadra 7 lote 4","BR2680719074931",77]]},{"la":-16.787567,"lo":-49.350929,"sp":53,"b":"Setor Belo Horizonte","z":"74946-647","p":[["Rua Tupi, 0, QD 17 LT T 21","BR262411398369K",78]]},{"la":-16.78979,"lo":-49.351193,"sp":54,"b":"Residencial Serra Das Brisas","z":"74947-818","p":[["Rua onix setor serra das brissas, SN, Quadra 5 lote 36 casa 2","BR262880875327X",79],["Rua onix setor serra das brissas, SN, Quadra 5 lote 36 casa 2","BR268333385848A",80]]},{"la":-16.788876,"lo":-49.351734,"sp":55,"b":"Residencial Serra Das Brisas","z":"74947-817","p":[["Rua Granada, 00, Qd 05 Lt 14","BR260720553406C",81]]},{"la":-16.789391,"lo":-49.352394,"sp":56,"b":"Residencial Serra Das Brisas","z":"74947-816","p":[["Rua Ágata Qd 04 Lote 09, Sn, Lado d oficina de moto all-pha","BR2668334933805",82],["Rua Ágata Qd 04 Lote 09, Sn, Lado d oficina de moto all-pha","BR264813908313V",83],["Rua Ágata Qd 04 Lote 09, Sn, Lado d oficina de moto all-pha","BR265547231098W",84]]},{"la":-16.789378,"lo":-49.352426,"sp":56,"b":"Residencial Serra Das Brisas","z":"74947-816","p":[["Rua Ágata, S.n, Quadra 04 lote 09","BR266010250432X",85],["Rua Ágata, S.n, Quadra 04 lote 09","BR263411281718V",86],["Rua Ágata, S.n, Quadra 04 lote 09","BR2607559693810",87],["Rua Ágata, S.n, Quadra 04 lote 09","BR261258924717X",88]]},{"la":-16.787901,"lo":-49.352699,"sp":58,"b":"Setor Belo Horizonte","z":"74946-655","p":[["Avenida Z, S/n, Qd 13 lt 36 horário comercial","BR2632281954719",89]]},{"la":-16.788174,"lo":-49.352352,"sp":58,"b":"Setor Belo Horizonte","z":"74946-655","p":[["Avenida Z, SN, Qd 7 Lt 30A St Belo Horizonte","BR267424270295B",90]]},{"la":-16.789017,"lo":-49.353071,"sp":59,"b":"Residencial Serra Das Brisas","z":"74947-815","p":[["Rua Rubi, 0, Qd 02 lt 38","BR266635130186S",91],["Rua Rubi, 0, Qd 02 lt 38","BR260261531429I",92],["Rua Rubi, 0, Qd 02 Lt42","BR269723331330Y",93],["Rua Rubi, 0, Quadra 3 lote 21","BR263024991475U",94],["Rua Rubi, 0, Qd 02 lt 38","BR262912141433R",95]]},{"la":-16.7915,"lo":-49.354999,"sp":62,"b":"Setor Dos Bandeirantes","z":"74947-843","p":[["Rodovia GO-040, 02, Barao tudo para construção","BR264757917955H",96]]},{"la":-16.793353,"lo":-49.354987,"sp":63,"b":"Setor Dos Bandeirantes","z":"74947-710","p":[["Avenida Bartolomeu Bueno da Silva Qd 02 LT 24, 00, Casa de esquina","BR262162405802N",97]]},{"la":-16.793922,"lo":-49.355106,"sp":64,"b":"Setor Dos Bandeirantes","z":"74947-710","p":[["Avenida Bartolomeu Bueno da Silva, 0, Qd 02 Lt 38 casa1 cinza escuro","BR266507188222W",98],["Avenida Bartolomeu Bueno da Silva, 0, Qd 02 lt 37 casa 02","BR266116753341Z",99]]},{"la":-16.794367,"lo":-49.354832,"sp":66,"b":"Setor Dos Bandeirantes","z":"74947-800","p":[["Rua Pascoal Moreira Cabral, 02, Quadra 15 Lote 19 - casa 02","BR268711715731Q",100]]},{"la":-16.795164,"lo":-49.353451,"sp":67,"b":"Setor Dos Bandeirantes","z":"74947-800","p":[["Rua Pascoal Moreira Cabral, Casa3, Qd 16 LT 6/10 casa 3","BR2627551617974",101]]},{"la":-16.796369,"lo":-49.352464,"sp":68,"b":"Setor Dos Bandeirantes","z":"74947-780","p":[["Rua Manoel Preto, Sn, Quadra 17 lote 09","BR268725199121O",102]]},{"la":-16.796667,"lo":-49.353523,"sp":69,"b":"Setor Aeroporto Sul 3ª Etapa","z":"74947-020","p":[["Avenida André Fernandes, 00, Quadra 63 lote 6","BR2677513224182",103]]},{"la":-16.798286,"lo":-49.35445,"sp":70,"b":"Setor Aeroporto Sul 2ª Etapa","z":"74947-320","p":[["Rua Brasília, 0, Qd 35 lote 3","BR266400396049H",104]]},{"la":-16.7971,"lo":-49.3517,"sp":71,"b":"Setor Aeroporto Sul","z":"74947-110","p":[["Rua 201, S/n, Quadra 41  lote 07","BR265107670315E",105]]},{"la":-16.797001,"lo":-49.3508,"sp":72,"b":"Setor Aeroporto Sul","z":"74947-210","p":[["Rua 212, Sn, Qd 25  lt 27","BR2681038614705",106],["Rua 212, Sn, Qd 25  lt 27","BR267990599747K",107],["Rua 212, Sn, Qd 25  lt 27","BR2694034955524",108]]},{"la":-16.797415,"lo":-49.350506,"sp":74,"b":"Setor Aeroporto Sul","z":"74947-210","p":[["Rua 212, 39, Qd 39 lote 11","BR269931709083J",109]]}];const EMB_TS=1792371822839;
+const S0=[];const EMB_TS=0;
 const $=id=>document.getElementById(id);
 /* ===== Banco de dados local (IndexedDB). Todo acesso passa por LS: trocar por Supabase depois mexe só aqui. ===== */
 let DBH=null;const cache={};
@@ -97,6 +106,7 @@ async function dbInit(){DBH=await idb();
 const LS={del(k){delete cache[k];try{DBH&&DBH.transaction('kv','readwrite').objectStore('kv').delete(k)}catch(e){}try{localStorage.removeItem(k)}catch(e){}},get:k=>k in cache?cache[k]:null,set(k,v){cache[k]=v;put(k,v);if(!DBH||String(v).length<3000){try{localStorage.setItem(k,v)}catch(e){}}}};
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=n=>Number(n).toLocaleString('pt-BR',{maximumFractionDigits:1});
+const WELCOME='<div class="big">👋 Bem-vindo ao Rota Fácil</div><div class="muted">Para começar, importe a planilha de entregas do dia (.xlsx da Shopee). Os dados ficam só neste celular.</div><div class="row"><label for="file" class="btn" style="margin:0;font-size:14px">📂 Importar planilha</label></div>';
 const norm=t=>String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 const OBS=[['entregar em mãos',/\bem maos\b|\bpessoalmente\b|\bentregar? (na|no|em|a) (mao|maos|portaria|recepcao|pessoa)\b/],['ligar antes',/\blig(ar|ue)\b|\btelefone\b|\bwhats(app)?\b/],['portaria/interfone',/\bportaria\b|\binterfone\b|\bporteiro\b|\bcondominio\b/],['atenção na descrição',/\bnao (deixar|entregar|receber)\b|\bso (entregar|receber)\b|\bretirar\b|\bfragil\b|\burgente\b|\bhorario\b|\bate as\b|\bapos as\b|\bobs\b|\bobservacao\b/]];
 const COM=/\b(loja|lojas|mercado|mercadinho|supermercado|padaria|farmacia|drogaria|oficina|mecanica|borracharia|lava ?jato|restaurante|lanchonete|pizzaria|acougue|hortifruti|salao|barbearia|estudio|studio|clinica|consultorio|escritorio|empresa|comercio|deposito|distribuidora|atacado|atacadista|construcao|posto|academia|igreja|escola|colegio|creche|ltda|eireli|galpao|galeria|shopping|conveniencia|bar|centro automotivo|auto ?pecas|auto ?center)\b/;
@@ -133,11 +143,10 @@ function zoned(rest,nodes,d,ks,base){ // termina uma zona antes de ir para a pr�
  for(const zi of zo){const ids=zs.get(names[zi-1]),mp=[last,...ids];
   opt(ids.length,(a,b)=>d(mp[a],mp[b]),[null,...ids.map(n=>ks[n])],ks[last]||null).forEach(l=>out.push(mp[l]));last=out[out.length-1]}
  return out}
-const WELCOME='<div class="big">👋 Bem-vindo ao Rota Fácil</div><div class="muted">Para começar, importe a planilha de entregas do dia (.xlsx da Shopee). Os dados ficam só neste celular.</div><div class="row"><label for="file" class="btn" style="margin:0;font-size:14px">📂 Importar planilha</label></div>';
 const LB={aus:'🚪 Ausente',nao:'❓ Não achei'};
 let gm='rua',endPt=null,pr={},dl={},tm=[],pts={},hm={},zn={},pd={},label='',S=[],st={},nm={},nt={},pin=[],order=[],cur=null,me=null,rt=null,dsid='',C=1,tok=0,markers=[],line=null,meMk=null,wid=null,lastP=null,lastT=0;
 if(typeof L==='undefined'){const z=new Proxy(function(){},{get:()=>z,apply:()=>z});window.L=z;$('status').textContent='O mapa não carregou (sem internet ou bloqueio). O restante do app funciona.'}
-const map=L.map('map').setView([-16.794,-49.35],15);
+const map=L.map('map').setView([-15.8,-47.9],4);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);
 const nk=s=>s.la+','+s.lo,mh=(a,b)=>Math.abs(a.la-b.la)*111320+Math.abs(a.lo-b.lo)*111320*C;
 function load(d,id,lb){S=d;dsid=id;label=lb||id;C=Math.cos(S.reduce((a,x)=>a+x.la,0)/S.length*Math.PI/180);pin=[];order=[];Object.values(mk).forEach(o=>map.removeLayer(o.m));mk={};showAll=false;showDone=false;flagMemo.clear();
@@ -152,7 +161,7 @@ function load(d,id,lb){S=d;dsid=id;label=lb||id;C=Math.cos(S.reduce((a,x)=>a+x.l
  try{zn=JSON.parse(LS.get('rf-zn')||'{}')}catch(e){zn={}}
  try{hm=JSON.parse(LS.get('rf-hm')||'{}')}catch(e){hm={}}
  try{pts=JSON.parse(LS.get('rf-pts')||'{}')}catch(e){pts={}}
- const pk=S.reduce((a,x)=>a+x.p.length,0);$('sub').textContent=S.length?`${pk} pacotes em ${S.length} paradas • Aparecida de Goiânia e região`:'Roteirização de entregas'}
+ const pk=S.reduce((a,x)=>a+x.p.length,0);$('sub').textContent=S.length?`${pk} pacotes em ${S.length} paradas`:'Roteirização de entregas'}
 function opt(m,d,k,k0,endD,init){
  const ids=[...Array(m).keys()].map(x=>x+1);if(m<3)return ids;
  const len=o=>{let t=0,p=0;for(const i of o){t+=d(p,i);p=i}return t+(endD&&o.length?endD(p):0)};
@@ -227,7 +236,7 @@ function render(){const E=etas();
  $('ptsinfo').textContent='📌 '+Object.values(pts).filter(o=>o.src!=='shopee').length+' endereços com posição gravada neste celular';
  {const pl=order.filter(i=>st[i]!=='ok'),late=pl.filter(i=>dlMin(i)!=null&&E[i]&&mm(E[i])>dlMin(i)).length,np=pin.filter(i=>!st[i]).length,bits=[];
  if(np)bits.push('✋ '+np+' paradas com ordem manual');if(Object.keys(pr).length)bits.push('⭐ '+Object.keys(pr).length+' com prioridade');if(Object.keys(dl).length)bits.push('⏰ '+Object.keys(dl).length+' com prazo');if(endPt)bits.push('🏁 ponto final definido');if(late)bits.push('⚠️ '+late+' vão passar do prazo');
- $('refine').textContent=bits.length?bits.join(' · '):'Sem ajustes manuais. Em cada parada da lista: ⬆️ ⬇️ 🔒 ⭐ ⏰.';$('endb').textContent=endPt?'🏁 Remover ponto final':'🏁 Definir ponto final (aqui)'}
+ $('refine').textContent=bits.length?bits.join(' · '):'';$('endb').textContent=endPt?'🏁 Remover ponto final':'🏁 Definir ponto final (aqui)'}
  $('ruas').textContent=streetText();
  const nx=order.find(i=>st[i]!=='ok'),el=$('nextp');el.className='panel next'+(nx!=null&&flags(nx).length?' hl':'')+(nx!=null&&arrivedFor===nx?' pulse':'');
  if(!S.length){el.innerHTML=WELCOME}else if(nx==null){el.innerHTML='<div class="big">🎉 Todas as entregas concluídas!</div>'}
@@ -349,7 +358,7 @@ function clearData(){
  if(line){map.removeLayer(line);line=null}
  load([],'vazio','');plan(null);$('status').textContent='Dados apagados'+(all?' (incluindo observações e histórico)':' (observações e histórico mantidos)')+'. Toque em 📂 Importar planilha para começar outra.'}
 $('clr').onclick=clearData;
-const APP_VER='3';
+const APP_VER='4';
 /* ---- avisos, desfazer, ritmo ---- */
 let undo=null,tt=null,arrivedFor=-1;
 function toast(msg,label,fn){$('tmsg').textContent=msg;const b=$('tact');b.hidden=!label;b.textContent=label||'';b.onclick=()=>{if(fn)fn();$('toast').hidden=true};$('toast').hidden=false;clearTimeout(tt);tt=setTimeout(()=>{$('toast').hidden=true},7000)}
@@ -477,6 +486,9 @@ function refineTail(){ // em segundo plano, melhora aos poucos o resto da rota (
  if(typingNow())pendingRender=true;else render();
  if(after<before*0.98&&rfN<6){rfN++;rfT=setTimeout(refineTail,700)}}
 function planT(q){if(Date.now()-lastFull>20000)plan(q)}
+$('upd').onclick=async()=>{$('status').textContent='Buscando a versão mais nova…';
+ try{if('serviceWorker' in navigator){for(const r of await navigator.serviceWorker.getRegistrations())await r.unregister()}if(window.caches){for(const k of await caches.keys())await caches.delete(k)}await fetch(location.pathname,{cache:'reload'})}catch(e){}
+ location.reload()};
 let wl=null;
 
 
@@ -486,8 +498,12 @@ function drive(on){document.body.classList.toggle('drive',on);$('drv').textConte
 $('drv').onclick=()=>drive(!document.body.classList.contains('drive'));$('drv2').onclick=()=>drive(false);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&document.body.classList.contains('drive'))wake(true)});
 $('zon').onchange=()=>{LS.set('rf-zon',$('zon').checked?'1':'0');plan(cur)};
+const FEEDBACK_WA=''; // opcional: número com DDI+DDD, ex.: 5562999999999
+$('fb').onclick=()=>{const m=(prompt('O que aconteceu ou o que você sentiu falta?')||'').trim();if(!m)return;
+ const ua=navigator.userAgent,info=`\n\n— Rota Fácil (teste 1) · ${S.length} paradas · ${/Android/i.test(ua)?'Android':/iPhone/i.test(ua)?'iPhone':'outro'}`;
+ window.open('https://wa.me/'+FEEDBACK_WA+'?text='+encodeURIComponent(m+info),'_blank')};
 async function init(){await dbInit();try{endPt=JSON.parse(LS.get('rf-end')||'null')}catch(e){endPt=null}gm=LS.get('rf-gm')||'perto';$('gm').value=gm;RAD=Math.max(50,Number(LS.get('rf-rad'))||250);$('rad').value=RAD;$('zon').checked=LS.get('rf-zon')==='1';{const dv=LS.get('rf-dark');setDark(dv==null?!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches):dv==='1')}$('ppk').value=LS.get('rf-ppk')||0;if(LS.get('rf-tour')!=='1')$('tour').hidden=false;setTimeout(checkVer,4000);let sv=null;try{sv=JSON.parse(LS.get('rf-data')||'null')}catch(e){}
- sv&&sv.S&&(sv.S.length||sv.vazio)&&sv.ts>EMB_TS?load(sv.S,sv.id,sv.label):load(S0,'1017','17/10/2026');
+ sv&&sv.S&&(sv.S.length||sv.vazio)?load(sv.S,sv.id,sv.label):load(S0,'vazio','');
  if(S.length)map.fitBounds(L.latLngBounds(S.map(s=>[s.la,s.lo])).pad(.08));plan(null)}
 init();
 if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{});
